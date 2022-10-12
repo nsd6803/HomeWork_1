@@ -12,10 +12,10 @@ def CD(address, pWay, allFiles):
             return pWay
         else:
             pWay = "/" + pWay
-            k = len(pWay) - 1
-            while pWay[k] != "/":
+            way_len = len(pWay) - 1
+            while pWay[way_len] != "/":
                 pWay = pWay[:-1]
-                k -= 1
+                way_len -= 1
             pWay = pWay[:-1]
             pWay = pWay[1:]
             return pWay
@@ -24,28 +24,28 @@ def CD(address, pWay, allFiles):
         return pWay + '/' + address
     # если на вход идет адрес с названием /root
     elif "/root/" in address:
-        addres = address.replace("/root/", '')
-        if addres in allFiles:
-            return addres
-        return "sh: cd: can't cd to " + addres + ". No such file or directory"
+        address = address.replace("/root/", '')
+        if address in allFiles:
+            return address
+        return "sh: cd: can't cd to " + address
     # если на вход идет переход к папке внутри текущей директории
     elif pWay == '' and (address + '/') in allFiles:
         return address
     else:
-        return "sh: cd: can't cd to " + address + ". No such file or directory"
+        return "sh: cd: can't cd to " + address
 
 
-# Функция для передвижения по директории
-def checkFile(address, pWay, allFiles):
+# Функция проверки директории
+def check(address, pWay, allFiles):
     if "/root" in address:
         address = address.replace("/root/", '')
         if address in allFiles:
             return address
-        return "cat: can't open" + address + ". No such file or directory"
+        return "cat: can't open" + address
     elif pWay + '/' + address in allFiles:
         return pWay + '/' + address
     else:
-        return "cat: can't open" + address + ". No such file or directory"
+        return "cat: can't open" + address
 
 
 # Функция для реализации комманды ls
@@ -94,8 +94,8 @@ def PWD(way):
 
 def main():
     # Выбор архива на работу (сделал 2 заготовленных)
-    print("Перед началом работы эмулятора, выберете с каким архивом работать.")
-    print("Напишите 1 или 2")
+    print("Before start, choose an archive to work with")
+    print("Choose 1 or 2")
     a = ''
     archive_number = input()
     while archive_number != '1' or archive_number != '2':
@@ -106,7 +106,7 @@ def main():
             a = 'Archive_2.zip'
             break
         else:
-            print('Вы набрали что-то не то. Попробуйте еще раз')
+            print('Something went wrong. Try again')
             archive_number = input()
     # переменная выбранного архива
     z = zipfile.ZipFile(a, 'r')
@@ -140,7 +140,7 @@ def main():
             else:
                 PWD(pWay)
         elif command[0] == "cat":
-            out = checkFile(command[1], pWay, allFiles)
+            out = check(command[1], pWay, allFiles)
             if "cat: can't open" in out:
                 print(out)
             else:
