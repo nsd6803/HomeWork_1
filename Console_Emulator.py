@@ -123,13 +123,19 @@ def main():
     while command != "exit":
         command = command.split(" ")
         if command[0] == "--help":
-            print('Built-in commands: \n'
-                '------------------ \n'
-                ' . : [ [[ cd ls cat pwd'
-                  )
+            if len(command) == 1:
+                print('Built-in commands: \n'
+                    '------------------ \n'
+                    ' . : [ [[ cd ls cat pwd'
+                      )
+            else:
+                print(command[0] + ' command in incorrect')
         elif command[0] == "--version":
-            print(
-                "   version 0.0.01\n")
+            if len(command) == 1:
+                print(
+                    "   version 0.0.01\n")
+            else:
+                print(command[0] + ' command in incorrect')
         elif command[0] == "pwd":
             PWD(pWay)
         elif command[0] == "ls":
