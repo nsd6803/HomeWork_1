@@ -112,7 +112,6 @@ def main():
     z = zipfile.ZipFile(a, 'r')
     # Возвращает элементы архива
     allFiles = (z.namelist())
-    print(allFiles)
     # Изначальный путь
     EnterWay = '/root> '
     # путь корня-константа для дальнейшей работы
@@ -123,7 +122,15 @@ def main():
     # работа пока не будет запрошена комманда завершения
     while command != "exit":
         command = command.split(" ")
-        if command[0] == "pwd":
+        if command[0] == "--help":
+            print('Built-in commands: \n'
+                '------------------ \n'
+                ' . : [ [[ cd ls cat pwd'
+                  )
+        elif command[0] == "--version":
+            print(
+                "   version 0.0.01\n")
+        elif command[0] == "pwd":
             PWD(pWay)
         elif command[0] == "ls":
             pWay_1 = pWay
