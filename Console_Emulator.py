@@ -43,7 +43,9 @@ def check(address, pWay, allFiles):
             return address
         return "cat: can't open" + address
     elif address in allFiles:
-        return  address
+        return address
+    elif pWay+'/'+address in allFiles:
+        return pWay+'/'+address
     else:
         return "cat: can't open" + address
 
