@@ -4,7 +4,7 @@ import zipfile
 # Функция для реализации комманды cd
 def CD(address, pWay, allFiles):
     # если на вход идет командя перейти к корню
-    if address == "~":
+    if address == "~" or address == "":
         return ""
     # если на вход идет команда поднятся по директории на 1 уровень
     elif address == ".." or address == "-":
@@ -42,14 +42,15 @@ def check(address, pWay, allFiles):
         if address in allFiles:
             return address
         return "cat: can't open" + address
-    elif pWay + '/' + address in allFiles:
-        return pWay + '/' + address
+    elif address in allFiles:
+        return  address
     else:
         return "cat: can't open" + address
 
 
 # Функция для реализации комманды ls
 def LS(wayL, allFiles):
+
     count = wayL.count('/')
     wayL += '/'
     # Проверка файлов внутри архива
@@ -94,22 +95,20 @@ def PWD(way):
 
 def main():
     # Выбор архива на работу (сделал 2 заготовленных)
-    print("Before start, choose an archive to work with")
-    print("Choose 1 or 2")
+    print("Before start, enter the name of the archive to work with")
     a = ''
     archive_number = input()
     while archive_number != '1' or archive_number != '2':
-        if archive_number == '1':
-            a = 'Archive_1.zip'
-            break
-        elif archive_number == '2':
-            a = 'Archive_2.zip'
-            break
-        else:
-            print('Something went wrong. Try again')
+        try:
+            a = archive_number
+            # переменная выбранного архива
+            z = zipfile.ZipFile(a, 'r')
+        except FileNotFoundError:
+            print('This archive does not exist')
             archive_number = input()
-    # переменная выбранного архива
-    z = zipfile.ZipFile(a, 'r')
+        else:
+            print('Success')
+            break
     # Возвращает элементы архива
     allFiles = (z.namelist())
     # Изначальный путь
@@ -125,8 +124,8 @@ def main():
         if command[0] == "--help":
             if len(command) == 1:
                 print('Built-in commands: \n'
-                    '------------------ \n'
-                    ' . : [ [[ cd ls cat pwd'
+                      '------------------ \n'
+                      ' . : [ [[ cd ls cat pwd'
                       )
             else:
                 print(command[0] + ' command in incorrect')
@@ -139,9 +138,16 @@ def main():
         elif command[0] == "pwd":
             PWD(pWay)
         elif command[0] == "ls":
-            pWay_1 = pWay
-            LS(pWay_1, allFiles)
-            print()
+            if len(command) == 1:
+                pWay_1 = pWay
+                LS(pWay_1, allFiles)
+                print()
+            elif len(command) == 2:
+                pWay_1 = pWay
+                LS(command[1], allFiles)
+                print()
+            else:
+                print("This command do not exist")
         elif command[0] == "cd":
             if len(command) == 2:
                 result = CD(command[1], pWay, allFiles)
@@ -150,14 +156,25 @@ def main():
                     print(result)
                 else:
                     pWay = result
+
+            elif len(command) == 1:
+                result = CD("", pWay, allFiles)
+                if "can't cd to " in result:
+                    pass
+                    print(result)
+                else:
+                    pWay = result
             else:
                 PWD(pWay)
         elif command[0] == "cat":
-            out = check(command[1], pWay, allFiles)
-            if "cat: can't open" in out:
-                print(out)
+            if len(command) == 2:
+                out = check(command[1], pWay, allFiles)
+                if "cat: can't open" in out:
+                    print(out)
+                else:
+                    CAT(out, a)
             else:
-                CAT(out, a)
+                print("This command do not exist")
         else:
             print("sh: " + command[0] + " not found")
         command = input(ConstWay + pWay + "> ")
